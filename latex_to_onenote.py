@@ -2,8 +2,7 @@ import sys
 import os
 import tempfile
 import subprocess
-import pyperclip
-import win32clipboard
+import clipboard
 from docx import Document
 from lxml import etree
 
@@ -76,7 +75,7 @@ def latex_to_onenote_clipboard(latex_string):
                     html_output = f'<!--[if gte msEquation 12]>{omml_string}<![endif]-->'
                     
                     # Set HTML clipboard
-                    set_html_clipboard(html_output)
+                    clipboard.set_clipboard(html_output, format=clipboard.ClipboardFormat.HTML_Format)
                     omml_found = True
                     print("✓ Converted LaTeX to OMML and copied to clipboard!")
                     print(f"Original LaTeX: {latex_clean}")
@@ -91,43 +90,20 @@ def latex_to_onenote_clipboard(latex_string):
             print(f"Error extracting OMML: {e}")
             return False
 
-def set_html_clipboard(html_string):
-    """
-    Set HTML format on clipboard (for OneNote to recognize OMML)
-    """
-    # HTML clipboard format requires specific header
-    html_header = "Version:0.9\r\nStartHTML:0000000000\r\nEndHTML:0000000000\r\nStartFragment:0000000000\r\nEndFragment:0000000000\r\n"
-    html_prefix = "<html><body><!--StartFragment-->"
-    html_suffix = "<!--EndFragment--></body></html>"
-    
-    full_html = html_header + html_prefix + html_string + html_suffix
-    
-    # Calculate byte positions
-    html_bytes = full_html.encode('utf-8')
-    start_html = html_header.index('StartHTML:') + 10
-    end_html = html_header.index('EndHTML:') + 8
-    start_frag = html_header.index('StartFragment:') + 14
-    end_frag = html_header.index('EndFragment:') + 12
-    
-    # Update with actual positions
-    full_html = full_html.replace('0000000000', str(len(html_header)).zfill(10), 1)
-    full_html = full_html.replace('0000000000', str(len(html_bytes)).zfill(10), 1)
-    full_html = full_html.replace('0000000000', str(len(html_header + html_prefix)).zfill(10), 1)
-    full_html = full_html.replace('0000000000', str(len(html_header + html_prefix + html_string)).zfill(10), 1)
-    
-    # Set clipboard
-    win32clipboard.OpenClipboard()
-    win32clipboard.EmptyClipboard()
-    cf_html = win32clipboard.RegisterClipboardFormat("HTML Format")
-    win32clipboard.SetClipboardData(cf_html, full_html.encode('utf-8'))
-    win32clipboard.CloseClipboard()
+
 
 if __name__ == "__main__":
     # Get LaTeX from clipboard or command line argument
     if len(sys.argv) > 1:
         latex_input = sys.argv[1]
     else:
-        latex_input = pyperclip.paste()
+        try:
+             # Try CF_UNICODETEXT
+             latex_input = clipboard.get_clipboard(clipboard.ClipboardFormat.CF_UNICODETEXT)
+        except:
+             # Fallback to CF_TEXT
+             latex_input = clipboard.get_clipboard(clipboard.ClipboardFormat.CF_TEXT)
+        
         print(f"Reading from clipboard: {latex_input}")
     
     if not latex_input.strip():

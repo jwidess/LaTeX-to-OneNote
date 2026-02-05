@@ -41,14 +41,17 @@ $pythonPath = Join-Path $VenvPath "Scripts\python.exe"
 
 if (Test-Path $pythonPath) {
     & $pythonPath -m pip install --upgrade pip
-    & $pythonPath -m pip install pyperclip python-docx pywin32 lxml
+    & $pythonPath -m pip install clip-util python-docx lxml
 } else {
     Write-Error "Could not find python in venv. Please remove '$VenvPath' folder and run this script again."
 }
 
 Write-Host "`nSetup complete!"
-Write-Host "To run the tool:"
-Write-Host "1. & '$VenvPath\Scripts\Activate.ps1'"
-Write-Host "2. python latex_to_onenote.py '<your_latex>'"
+Write-Host "Launching shell with virtual environment activated..."
+Write-Host "You can now run: python latex_to_onenote.py '<your_latex>'" -ForegroundColor Cyan
 
-pause
+$ActivateScript = Join-Path $VenvPath "Scripts\Activate.ps1"
+$ShellExe = (Get-Process -Id $PID).Path
+
+# Launch nested shell with venv activated, staying in the script directory
+& $ShellExe -NoExit -ExecutionPolicy Bypass -File "$ActivateScript"
