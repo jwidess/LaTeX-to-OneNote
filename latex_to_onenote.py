@@ -93,9 +93,13 @@ def latex_to_onenote_clipboard(latex_string):
 
 
 if __name__ == "__main__":
+    # Parse arguments
+    force_convert = '-f' in sys.argv
+    args = [arg for arg in sys.argv[1:] if arg != '-f']
+
     # Get LaTeX from clipboard or command line argument
-    if len(sys.argv) > 1:
-        latex_input = sys.argv[1]
+    if len(args) > 0:
+        latex_input = args[0]
     else:
         try:
              # Try CF_UNICODETEXT
@@ -106,10 +110,21 @@ if __name__ == "__main__":
         
         print(f"Reading from clipboard: {latex_input}")
     
-    if not latex_input.strip():
+    if not latex_input or not latex_input.strip():
         print("Error: No LaTeX input provided")
         print("Usage: python latex_to_onenote.py 'V_{rms}=\\frac{V_{peak}}{\\sqrt{2}}'")
         print("   or: Copy LaTeX to clipboard and run: python latex_to_onenote.py")
+        print("   (Use -f to force conversion even if no LaTeX detected)")
+        sys.exit(1)
+
+    # Basic LaTeX detection (unless forced)
+    common_latex_symbols = ['\\', '{', '}', '_', '^', '$']
+    is_latex = any(symbol in latex_input for symbol in common_latex_symbols)
+    
+    if not is_latex and not force_convert:
+        print("\nError: No LaTeX symbols detected in input.")
+        print("The input doesn't look like LaTeX (missing '\\', '{', '}', '_', '^', or '$').")
+        print("Use -f to force conversion anyway.")
         sys.exit(1)
     
     success = latex_to_onenote_clipboard(latex_input)
