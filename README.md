@@ -17,7 +17,7 @@ Basic Architecture: Clipboard/Input (LaTeX) -> Pandoc -> Word Doc (OMML) -> Extr
 
 ## Usage
 
-**Method 1: Clipboard (Easiest)**
+**Method 1: Clipboard**
 1.  Copy any LaTeX to your clipboard (e.g., `V_{rms}=\frac{V_{peak}}{\sqrt{2}}`).
 2.  Run the script:
     ```bash
@@ -29,6 +29,14 @@ Basic Architecture: Clipboard/Input (LaTeX) -> Pandoc -> Word Doc (OMML) -> Extr
 ```bash
 python latex_to_onenote.py "E=mc^2"
 ```
+
+**Method 3: Auto Hotkey Script (Recommended)**
+
+Use the included **AutoHotkey** script for a global shortcut.
+1.  Install [AutoHotkey](https://www.autohotkey.com).
+2.  Run `latex_to_onenote.ahk`.
+3.  Copy LaTeX and press `Ctrl+Alt+L`.
+4.  Paste into OneNote (`Ctrl+V`).
 
 **Options:**
 *   `-f`: Force conversion even if the input doesn't look like LaTeX (skips safety check).

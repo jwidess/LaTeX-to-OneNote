@@ -16,8 +16,25 @@ if !FileExist(VenvPython) {
     ExitApp
 }
 
+; Tray Menu Setup
+Menu, Tray, Tip, LaTeX to OneNote Converter
+Menu, Tray, Add, Show Shortcut, ShowReminder
+Menu, Tray, Default, Show Shortcut ; Make clicking the icon trigger the popup
+Menu, Tray, Click, 1 ; Trigger on single click
+
 ; Startup Reminder
-MsgBox, 64, LaTeX to OneNote Ready, Press Ctrl + Alt + L to convert clipboard contents from LaTeX to OneNote.
+GoSub, ShowReminder
+
+return
+
+; Label for reminder
+ShowReminder:
+    MsgBox, 64, LaTeX to OneNote Ready, Press Ctrl + Alt + L to convert clipboard contents from LaTeX to OneNote.
+return
+
+ExitScript:
+    ExitApp
+return
 
 ; Hotkey: Ctrl + Alt + L
 ^!l::
