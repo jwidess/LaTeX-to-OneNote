@@ -16,9 +16,14 @@ if !FileExist(VenvPython) {
     ExitApp
 }
 
+; Configuration
+AutoPaste := 1
+
 ; Tray Menu Setup
 Menu, Tray, Tip, LaTeX to OneNote Converter
 Menu, Tray, Add, Show Shortcut, ShowReminder
+Menu, Tray, Add, Auto-Paste on Success, ToggleAutoPaste
+Menu, Tray, Check, Auto-Paste on Success
 Menu, Tray, Default, Show Shortcut ; Make clicking the icon trigger the popup
 Menu, Tray, Click, 1 ; Trigger on single click
 
@@ -30,6 +35,11 @@ return
 ; Label for reminder
 ShowReminder:
     MsgBox, 64, LaTeX to OneNote Ready, Press Ctrl + Alt + L to convert clipboard contents from LaTeX to OneNote.
+return
+
+ToggleAutoPaste:
+    AutoPaste := !AutoPaste
+    Menu, Tray, ToggleCheck, Auto-Paste on Success
 return
 
 ExitScript:
@@ -47,7 +57,11 @@ return
     
     ; Check result
     if (ErrorLevel == 0) {
-        ToolTip, Success! (Copied to Clipboard)
+        ToolTip, Success!
+        if (AutoPaste) {
+            ToolTip, Success! (Pasting...)
+            Send, ^v ; Paste
+        }
         Sleep, 1500
         ToolTip ; Hide tooltip
     } else {

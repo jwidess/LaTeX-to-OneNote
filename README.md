@@ -9,11 +9,10 @@ Basic Architecture: Clipboard/Input (LaTeX) -> Pandoc -> Word Doc (OMML) -> Extr
 
 ## Setup
 
-**Open PowerShell, navigate to the directory, and run the setup script:** 
-(Installs Pandoc, Python venv, and required packages)
-```powershell
-.\setup_env.ps1
-```
+1. Download or clone this repo.
+2. Install [Python 3.x](https://www.python.org/downloads/) if you don't have it.
+3. Launch the `setup_env.ps1` PowerShell script to install dependencies and setup venv.
+   
 
 ## Usage
 
@@ -32,11 +31,11 @@ python latex_to_onenote.py "E=mc^2"
 
 **Method 3: Auto Hotkey Script (Recommended)**
 
-Use the included **AutoHotkey** script for a global shortcut.
-1.  Install [AutoHotkey](https://www.autohotkey.com).
+Use the included **AutoHotkey** script, `latex_to_onenote.ahk` to easily paste raw LaTeX directly from your clipboard into OneNote using `Ctrl+Alt+L`
+1.  Install [AutoHotkey](https://www.autohotkey.com) v1.1, not v2 compatible.
 2.  Run `latex_to_onenote.ahk`.
-3.  Copy LaTeX and press `Ctrl+Alt+L`.
-4.  Paste into OneNote (`Ctrl+V`).
+3.  Copy your LaTeX, select OneNote and press `Ctrl+Alt+L`. The script will paste the result if it succeeds.
+    *   *Note: Auto pasting can be disabled via the system tray icon right-click menu.*
 
 **Options:**
 *   `-f`: Force conversion even if the input doesn't look like LaTeX (skips safety check).
