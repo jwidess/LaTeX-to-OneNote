@@ -21,6 +21,12 @@ if (-not $pandocSystem -and -not (Test-Path $pandocLocal)) {
     }
 } else {
     Write-Host "Pandoc is available!"
+    # If pandoc is only at the local path (not in system PATH), add it so child processes can find it
+    if (-not $pandocSystem -and (Test-Path $pandocLocal)) {
+        $pandocDir = Split-Path $pandocLocal
+        $env:PATH = "$env:PATH;$pandocDir"
+        Write-Host "Added Pandoc to PATH: $pandocDir" -ForegroundColor Yellow
+    }
 }
 
 # Virtual environment path

@@ -1,5 +1,6 @@
 import sys
 import os
+import shutil
 import tempfile
 import subprocess
 import clipboard
@@ -23,10 +24,12 @@ def latex_to_onenote_clipboard(latex_string):
             f.write(f'${latex_clean}$')
         
         # Convert with pandoc to docx (which contains OMML)
-        pandoc_path = r"C:\Users\Justin\AppData\Local\Pandoc\pandoc.exe"
-        if not os.path.exists(pandoc_path):
-             # Fallback to system path
-             pandoc_path = 'pandoc'
+        _local_pandoc = os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Pandoc', 'pandoc.exe')
+        pandoc_path = (
+            shutil.which('pandoc') or
+            (_local_pandoc if os.path.exists(_local_pandoc) else None) or
+            'pandoc'
+        )
 
         try:
             result = subprocess.run(
@@ -93,7 +96,7 @@ def latex_to_onenote_clipboard(latex_string):
 
 
 if __name__ == "__main__":
-    # Parse arguments
+    # Handle arguments
     force_convert = '-f' in sys.argv
     args = [arg for arg in sys.argv[1:] if arg != '-f']
 
